@@ -25,11 +25,6 @@ if (countBtn && numberInput) {
   });
 }
 
-
-
-
-function occurrences(numbers: number[]): string[];
-function occurrences(strings: string[]): string[];
 function occurrences(input: number[] | string[]): string[] {
   const counts: { [key: string]: number } = {};
 
