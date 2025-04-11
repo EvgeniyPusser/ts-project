@@ -6,6 +6,8 @@ import './style.css';
 const countBtn = document.getElementById('count-btn');
 const numberInput = document.getElementById('number-input') as HTMLInputElement;
 
+
+
 if (countBtn && numberInput) {
   countBtn.addEventListener('click', () => {
     const inputValue = numberInput.value;
@@ -14,58 +16,32 @@ if (countBtn && numberInput) {
       .map(str => parseInt(str.trim()))
       .filter(num => !isNaN(num));
 
-    displayNumberOccurrences(numberArray);
+    const output = occurrences(numberArray); // Use the result of the occurrences function
+
+    const numberOutputEl = document.getElementById('number-output');
+    if (numberOutputEl) {
+      numberOutputEl.innerHTML = output.join('<br>');
+    }
   });
 }
 
-function displayNumberOccurrences(numbers: number[]): void {
-  const counts: { [key: number]: number } = {};
 
-  // Count occurrences
-  for (const num of numbers) {
-    if (counts[num] === undefined) {
-      counts[num] = 1;
-    } else {
-      counts[num]++;
-    }
-  }
 
-  // Extract unique numbers to sort manually
-  const uniqueNumbers: number[] = [];
-  for (const key in counts) {
-    uniqueNumbers.push(Number(key));
-  }
 
-  // Manual sort: first by count DESC, then by number ASC
-  for (let i = 0; i < uniqueNumbers.length - 1; i++) {
-    for (let j = i + 1; j < uniqueNumbers.length; j++) {
-      const a = uniqueNumbers[i];
-      const b = uniqueNumbers[j];
-      const countA = counts[a];
-      const countB = counts[b];
+function occurrences(numbers: number[]): string[];
+function occurrences(strings: string[]): string[];
+function occurrences(input: number[] | string[]): string[] {
+  const counts: { [key: string]: number } = {};
 
-      const shouldSwap =
-        countA < countB || (countA === countB && a > b);
-      if (shouldSwap) {
-        const temp = uniqueNumbers[i];
-        uniqueNumbers[i] = uniqueNumbers[j];
-        uniqueNumbers[j] = temp;
-      }
-    }
-  }
+  input.forEach(item => {
+    const key = String(item);
+    counts[key] = (counts[key] || 0) + 1;
+  });
 
-  // Display
-  const output: string[] = [];
-  for (const num of uniqueNumbers) {
-    output.push(`${num} => ${counts[num]}`);
-  }
-
-  const numberOutputEl = document.getElementById('number-output');
-  if (numberOutputEl) {
-    numberOutputEl.innerHTML = output.join('<br>');
-  }
+  return Object.entries(counts)
+    .sort(([aKey, aVal], [bKey, bVal]) => bVal - aVal || aKey.localeCompare(bKey))
+    .map(([key, count]) => `${key} => ${count}`);
 }
-
 
 
 const checkAnagramBtn = document.getElementById('check-anagram-btn');
@@ -90,31 +66,20 @@ if (checkAnagramBtn && wordInput && anagramInput) {
 
 
 
-function isAnagram(word: string, anagram: string): boolean {
-  const wordCount: { [char: string]: number } = {};
-  const anagramCount: { [char: string]: number } = {};
-  let result = true;
+function isAnagram(word1: string, word2: string): boolean {
+  const normalize = (str: string) => str.replace(/\W/g, '').toLowerCase();
+  const normalizedWord1 = normalize(word1);
+  const normalizedWord2 = normalize(word2);
 
-  if (word.length !== anagram.length) {
-    result = false;
-  } else {
-    for (const char of word) {
-      wordCount[char] = (wordCount[char] ?? 0) + 1;
-    }
-
-    for (const char of anagram) {
-      anagramCount[char] = (anagramCount[char] ?? 0) + 1;
-    }
-
-    for (const char in wordCount) {
-      if (wordCount[char] !== anagramCount[char]) {
-        result = false;
-        break;
-      }
-    }
+  if (normalizedWord1.length !== normalizedWord2.length) {
+    return false;
   }
 
-  return result;
+  const count1 = occurrences(normalizedWord1.split(''));
+  const count2 = occurrences(normalizedWord2.split(''));
+
+  return count1.every((entry, index) => entry === count2[index]);
 }
+
 
 
