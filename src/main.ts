@@ -77,14 +77,23 @@ function isAnagram(word1: string, word2: string): boolean {
 }
 
 
-function find<T, K extends keyof T>(arr: T[], field: K, value: T[K]): T[] {
-  return arr.filter(item => item[field] === value);
-}
+
 type Person = {
   id: number;
   name: string;
   age: number;
 };
+
+function findBySample<T>(arr: T[], sample: Partial<T>): T[] {
+  const entries = Object.entries(sample);
+  if (entries.length !== 1) {
+    throw new Error("Sample object must have exactly one field");
+  }
+
+  const [field, value] = entries[0];
+  return arr.filter(item => item[field as keyof T] === value);
+}
+
 
 const people: Person[] = [
   { id: 1, name: 'Alice', age: 30 },
@@ -97,14 +106,14 @@ const people: Person[] = [
   { id: 8, name: 'Grace', age: 29 },
 ];
 
-const result = find(people, 'name', 'Alice');
+const result = findBySample(people, { name: 'Alice' });
 console.log(result);
 // Output:
 // [
 //   { id: 1, name: 'Alice', age: 30 },
 //   { id: 3, name: 'Alice', age: 40 }
 // ]
-const result2 = find(people, 'age', 30);
+const result2 = findBySample(people, { age: 30 });
 console.log(result2);
 // Output:
 // [
