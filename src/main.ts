@@ -77,4 +77,61 @@ function isAnagram(word1: string, word2: string): boolean {
 }
 
 
+function find<T, K extends keyof T>(arr: T[], field: K, value: T[K]): T[] {
+  return arr.filter(item => item[field] === value);
+}
+type Person = {
+  id: number;
+  name: string;
+  age: number;
+};
+
+const people: Person[] = [
+  { id: 1, name: 'Alice', age: 30 },
+  { id: 2, name: 'Bob', age: 25 },
+  { id: 3, name: 'Alice', age: 40 },
+  { id: 4, name: 'Charlie', age: 35 },
+  { id: 5, name: 'David', age: 28 },
+  { id: 6, name: 'Eve', age: 22 },
+  { id: 7, name: 'Frank', age: 45 },
+  { id: 8, name: 'Grace', age: 29 },
+];
+
+const result = find(people, 'name', 'Alice');
+console.log(result);
+// Output:
+// [
+//   { id: 1, name: 'Alice', age: 30 },
+//   { id: 3, name: 'Alice', age: 40 }
+// ]
+const result2 = find(people, 'age', 30);
+console.log(result2);
+// Output:
+// [
+//   { id: 1, name: 'Alice', age: 30 }
+// ]
+
+
+function update<T>(original: T, updates: Partial<T>): T {
+  return { ...original, ...updates };
+}
+type PersonWithCity = {
+  id: number;
+  age: number;
+  city: string;
+};
+
+const person: PersonWithCity = { id: 123, age: 25, city: "Lod" };
+const updater = {city: "Rehovot" };
+
+const updatedPerson = update(person, updater);
+
+console.log(updatedPerson);
+
+const person2: PersonWithCity = { id: 456, age: 30, city: "Tel Aviv" };
+const updater2 = { age: 31, city: "Haifa" };
+const updatedPerson2 = update(person2, updater2);
+console.log(updatedPerson2);
+// Output:
+// { id: 456, age: 31, city: "Haifa" }
 
