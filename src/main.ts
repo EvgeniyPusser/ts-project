@@ -84,14 +84,11 @@ type Person = {
   age: number;
 };
 
-function findBySample<T>(arr: T[], sample: Partial<T>): T[] {
-  const entries = Object.entries(sample);
-  if (entries.length !== 1) {
-    throw new Error("Sample object must have exactly one field");
-  }
 
-  const [field, value] = entries[0];
-  return arr.filter(item => item[field as keyof T] === value);
+function findBySample<T>(array: T[], searchObj: Partial<T>): T[] {
+  return array.filter(item =>
+    Object.entries(searchObj).every(([key, value]) => item[key as keyof T] === value)
+  );
 }
 
 
